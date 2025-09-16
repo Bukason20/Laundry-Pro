@@ -4,6 +4,7 @@ import { databases } from "../../lib/appwrite";
 import { Query, Permission, Role } from "appwrite";
 import { useAuth } from "../../context/authContext";
 import { FaPeopleGroup } from "react-icons/fa6";
+import { SiBookstack } from "react-icons/si";
 
 const databaseId = "68b88587000b66a7186b";
 const ordersCollection = "orders";
@@ -93,7 +94,7 @@ function OrderDetails() {
           className="bg-blue-400 p-2 w-fit cursor-pointer text-white font-bold flex items-center rounded-md"
           onClick={() => navigate("/u/orders")}
         >
-          <FaPeopleGroup />
+          <SiBookstack />
           <p>View Orders</p>
         </button>
       </div>

@@ -5,6 +5,7 @@ import { databases } from "../../lib/appwrite";
 import { useAuth } from "../../context/authContext";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
+import { SiBookstack } from "react-icons/si";
 
 function Orders() {
   const { user } = useAuth();
@@ -143,7 +144,7 @@ function Orders() {
           className="bg-blue-400 p-2 w-fit cursor-pointer text-white font-bold flex items-center rounded-md"
           onClick={() => setAddOrder(!addOrder)}
         >
-          {addOrder ? <FaPeopleGroup /> : <FaPlus />}
+          {addOrder ? <SiBookstack /> : <FaPlus />}
           <p>{addOrder ? "View Orders" : "Add Order"}</p>
         </button>
       </div>
