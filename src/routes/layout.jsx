@@ -12,13 +12,21 @@ import PrivateRoute from "./privateRoute";
 import Orders from "./user/order";
 import OrderDetails from "./user/orderDetails";
 import Home from "./pages/home";
+import PublicRoute from "./publicRoute";
+import Profile from "./user/profile";
 function Layout() {
   return (
     <Routes>
       <Route path="/" element={<Nav />}>
         <Route index element={<Home />} />
         {/* Auth routes */}
-        <Route path="auth" element={<AuthLayout />}>
+        <Route 
+          path="auth" 
+          element={
+            <PublicRoute>
+              <AuthLayout />  
+            </PublicRoute>
+          }>
           <Route path="login" element={<AuthLogin />} />
           <Route path="signup" element={<AuthSignup />} />
         </Route>
@@ -35,6 +43,7 @@ function Layout() {
           <Route index element={<Dashboard />} />
           <Route path="customers" element={<Customers />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="orders-details/:id" element={<OrderDetails />} />
         </Route>
 

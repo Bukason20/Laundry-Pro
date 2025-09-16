@@ -5,7 +5,7 @@ export default function PrivateRoute({ children }) {
   const { user, initializing } = useAuth();
 
   if (initializing) {
-    return <p>Loading...</p>; // show spinner only while checking session
+    return <p>Loading...</p>;
   }
 
   return user ? children : <Navigate to="/auth/login" replace />;

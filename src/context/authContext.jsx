@@ -42,15 +42,16 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // --------------------logout functionality-----------------------------------
   const logout = async () => {
   const confirmLogout = window.confirm("Are you sure you want to logout?");
   if (!confirmLogout) return;
 
   setLoading(true);
   try {
-    await account.deleteSession("current"); // ✅ log out user
+    await account.deleteSession("current"); 
     setUser(null);
-    navigate("/auth/login"); // redirect to login page
+    navigate("/auth/login");
   } catch (err) {
     setError(err.message);
   } finally {
@@ -58,7 +59,14 @@ const AuthProvider = ({ children }) => {
   }
 };
 
-  // ✅ Automatically check current user when app loads
+ useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(""), 3000);
+      return () => clearTimeout(timer); // cleanup on unmount/change
+    }
+  }, [error]);
+
+  // Automatically check current user when app loads
   useEffect(() => {
   const getCurrentUser = async () => {
     try {
