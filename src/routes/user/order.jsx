@@ -4,6 +4,7 @@ import { ID, Query, Permission, Role } from "appwrite";
 import { databases } from "../../lib/appwrite";
 import { useAuth } from "../../context/authContext";
 import { Link, useNavigate } from "react-router-dom";
+import { MdDelete } from "react-icons/md";
 
 function Orders() {
   const { user } = useAuth();
@@ -162,6 +163,7 @@ function Orders() {
                   <th className="border-y border-x-0 border-blue-200 p-4">Clothes</th>
                   <th className="border-y border-x-0 border-blue-200 p-4">Price</th>
                   <th className="border-y border-x-0 border-blue-200 p-4">Status</th>
+                  <th className="border-y border-x-0 border-blue-200 p-4"></th>
                 </tr>
               </thead>
               <tbody>
@@ -181,6 +183,9 @@ function Orders() {
                       </td>
                       <td className="border-y border-x-0 border-blue-200 p-4 font-semibold">₦{order.price}</td>
                       <td className="border-y border-x-0 border-blue-200 p-4 font-semibold">{order.status}</td>
+                      <td onClick={() => navigate(`/u/orders-details/${order.$id}`)} className="border-y border-x-0 border-blue-200 p-4 font-semibold">
+                        <p className="bg-blue-400 w-fit text-white px-3 py-1 text-sm rounded-2xl cursor-pointer">See details</p>
+                      </td>
                     </tr>
                   );
                 })}
@@ -219,7 +224,7 @@ function Orders() {
           <div className="mb-4">
             <h3 className="font-semibold mb-2">Clothes</h3>
             {clothes.map((cloth, index) => (
-              <div key={index} className="flex gap-3 mb-3">
+              <div key={index} className="flex gap-3 mb-3 items-center justify-between">
                 <input
                   type="text"
                   placeholder="Cloth type"
@@ -236,7 +241,7 @@ function Orders() {
                   className="p-2 border rounded w-1/6"
                   required
                 />
-                <div className="flex gap-2">
+                <div className="flex gap-2 items">
                   {["Wash", "Iron", "Dry Clean"].map((service) => (
                     <label key={service} className="flex items-center gap-1">
                       <input
@@ -249,8 +254,8 @@ function Orders() {
                   ))}
                 </div>
 
-                <div onClick={() => removeClothRow(index)}>
-                  <p>Remove Clothe</p>
+                <div onClick={() => removeClothRow(index)} className="cursor-pointer text-red-400">
+                  <MdDelete />
                 </div>
               </div>
             ))}

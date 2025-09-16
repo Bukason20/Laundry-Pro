@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { databases } from "../../lib/appwrite"; 
 import { Query, Permission, Role } from "appwrite";
 import { useAuth } from "../../context/authContext";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 const databaseId = "68b88587000b66a7186b";
 const ordersCollection = "orders";
@@ -14,6 +15,7 @@ function OrderDetails() {
   const [loading, setLoading] = useState(true);
   const [updateStatus, setUpdateStatus] = useState(false);
   const [status, setStatus] = useState("");
+  const navigate = useNavigate()
 
   // ref for printing
   const printRef = useRef();
@@ -83,9 +85,23 @@ function OrderDetails() {
   const totalQuantity = clothes.reduce((sum, cloth) => sum + Number(cloth.quantity), 0);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] mt-4">
-      {/* Printable section */}
-      <div ref={printRef} className="bg-white p-7 mt-5 w-[60%] rounded-lg shadow-md">
+    <div>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-blue-400">Order Details</h1>
+
+        <button
+          className="bg-blue-400 p-2 w-fit cursor-pointer text-white font-bold flex items-center rounded-md"
+          onClick={() => navigate("/u/orders")}
+        >
+          <FaPeopleGroup />
+          <p>View Orders</p>
+        </button>
+      </div>
+
+
+      <div className="flex flex-col items-center justify-center min-h-[80vh] mt-4">
+        {/* Printable section */}
+        <div ref={printRef} className="bg-white p-7 mt-5 w-[60%] rounded-lg shadow-md">
         <div className="flex justify-between border-b py-3 border-gray-300">
           <div>
             <p className="text-2xl font-semibold">Order #{order.$id.slice(-5)}</p>
@@ -187,6 +203,9 @@ function OrderDetails() {
           Print
         </button>
       </div>
+      </div>
+ 
+      
     </div>
   );
 }
