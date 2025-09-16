@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { databases } from "../../lib/appwrite"; 
 import { Query, Permission, Role } from "appwrite";
@@ -14,6 +14,9 @@ function OrderDetails() {
   const [loading, setLoading] = useState(true);
   const [updateStatus, setUpdateStatus] = useState(false);
   const [status, setStatus] = useState("");
+
+  // ref for printing
+  const printRef = useRef();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -54,12 +57,23 @@ function OrderDetails() {
           Permission.delete(Role.user(user.$id)),
         ]
       );
-      setOrder(updated); // update state with new order
-      setUpdateStatus(false); // hide dropdown again
+      setOrder(updated); 
+      setUpdateStatus(false); 
     } catch (err) {
       console.error("Error updating status:", err);
       alert("Failed to update order: " + err.message);
     }
+  };
+
+  const handlePrint = () => {
+    const printContents = printRef.current.innerHTML;
+    const printWindow = window.open("", "", "height=600,width=800");
+    printWindow.document.write("<html><head><title>Print Order</title>");
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(printContents);
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.print();
   };
 
   if (loading) return <p>Loading...</p>;
@@ -70,7 +84,8 @@ function OrderDetails() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] mt-4">
-      <div className="bg-white p-7 mt-5 w-[60%] rounded-lg shadow-md">
+      {/* Printable section */}
+      <div ref={printRef} className="bg-white p-7 mt-5 w-[60%] rounded-lg shadow-md">
         <div className="flex justify-between border-b py-3 border-gray-300">
           <div>
             <p className="text-2xl font-semibold">Order #{order.$id.slice(-5)}</p>
@@ -150,18 +165,28 @@ function OrderDetails() {
         </div>
       </div>
 
-      <button
-        className="bg-blue-500 text-white text-sm rounded-lg w-[150px] font-bold py-2 mt-8"
-        onClick={() => {
-          if (updateStatus) {
-            handleProgress();
-          } else {
-            setUpdateStatus(true);
-          }
-        }}
-      >
-        {updateStatus ? "Save Progress" : "Update Progress"}
-      </button>
+      {/* Buttons */}
+      <div className="flex gap-4 mt-8">
+        <button
+          className="bg-blue-500 text-white text-sm rounded-lg w-[150px] font-bold py-2"
+          onClick={() => {
+            if (updateStatus) {
+              handleProgress();
+            } else {
+              setUpdateStatus(true);
+            }
+          }}
+        >
+          {updateStatus ? "Save Progress" : "Update Progress"}
+        </button>
+
+        <button
+          className="bg-green-500 text-white text-sm rounded-lg w-[150px] font-bold py-2"
+          onClick={handlePrint}
+        >
+          Print
+        </button>
+      </div>
     </div>
   );
 }

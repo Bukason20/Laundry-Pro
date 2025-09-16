@@ -3,6 +3,7 @@ import { account } from "../../lib/appwrite"; // adjust path if needed
 import { ID } from "appwrite";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
+import { HeroBg } from "../../assets/images";
 
 function AuthSignup() {
   const [name, setName] = useState("");
@@ -18,9 +19,12 @@ function AuthSignup() {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center h-[85vh]'>
-      <h2 className='text-3xl font-bold'>Create Accpunt</h2>
-      <p className='text-sm text-blue-300'>Sign up to manage your Laundry</p>
+    <div 
+      className='flex flex-col items-center justify-center min-h-[85vh]'
+      style={{ background: `linear-gradient(rgba(66,153,255,0.8), rgba(66,153,255,0.8)), url(${HeroBg})`,backgroundRepeat: "no-repeat", backgroundSize:"cover" }}
+    >
+      <h2 className='text-3xl font-bold text-white'>Create Accpunt</h2>
+      <p className='text-sm text-white'>Sign up to manage your Laundry</p>
       <form onSubmit={handleSubmit} className='bg-white w-[35%] px-8 py-5 rounded-md my-5'>
         <input
           type="text"

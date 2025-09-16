@@ -168,7 +168,7 @@ function Orders() {
                 {orders.map((order) => {
                   const clothesData = order.clothes ? JSON.parse(order.clothes) : [];
                   return (
-                    <tr key={order.$id} onClick={() => navigate(`/u/orders-details/${order.$id}`)} className="bg-gray-100">
+                    <tr key={order.$id} onClick={() => navigate(`/u/orders-details/${order.$id}`)} className="bg-gray-100 cursor-default">
                       <td className="border-y border-x-0 border-blue-200 p-4 font-semibold">
                         {customerMap[order.customerId] || "Unknown"}
                       </td>

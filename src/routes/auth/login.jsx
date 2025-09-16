@@ -3,6 +3,7 @@ import "../../index.css"
 import { Link, useNavigate } from 'react-router-dom'
 import { account } from '../../lib/appwrite';
 import { useAuth } from '../../context/authContext';
+import { HeroBg } from '../../assets/images';
 
 function AuthLogin() {
    const [email, setEmail] = useState("");
@@ -17,9 +18,12 @@ function AuthLogin() {
    };
 
    return (
-      <div className='flex flex-col items-center justify-center h-[85vh]'>
-      <h2 className='text-3xl font-bold'>Welcome Back</h2>
-      <p className='text-sm text-blue-300'>Sign in to manage your Laundry</p>
+      <div 
+         className='flex flex-col items-center justify-center min-h-[85vh]'
+         style={{ background: `linear-gradient(rgba(66,153,255,0.8), rgba(66,153,255,0.8)), url(${HeroBg})`,backgroundRepeat: "no-repeat", backgroundSize:"cover" }}   
+      >
+      <h2 className='text-3xl font-bold text-white'>Welcome Back</h2>
+      <p className='text-sm text-white'>Sign in to manage your Laundry</p>
 
       <form
          onSubmit={handleSubmit} 
