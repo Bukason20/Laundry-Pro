@@ -12,6 +12,7 @@ function Orders() {
   const [orders, setOrders] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
+  
 
   // form states
   const [selectedCustomer, setSelectedCustomer] = useState("");
@@ -65,6 +66,7 @@ function Orders() {
   // add a new order
   const handleAddOrder = async (e) => {
     e.preventDefault();
+    setLoading(true)
     if (!user || !selectedCustomer) return;
 
     try {
@@ -94,6 +96,8 @@ function Orders() {
       setStatus("collected");
     } catch (err) {
       console.error("Error adding order:", err);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -276,9 +280,9 @@ function Orders() {
             onChange={(e) => setStatus(e.target.value)}
             className="p-2 border rounded w-full mb-4"
           >
-            <option value="collected">Collected</option>
+            <option value="pending">Pending</option>
             <option value="processing">Processing</option>
-            <option value="finished">Finished</option>
+            <option value="completed">Completed</option>
             <option value="delivered">Delivered</option>
           </select>
 
@@ -286,7 +290,7 @@ function Orders() {
             type="submit"
             className="bg-blue-400 px-4 py-2 text-white font-bold rounded"
           >
-            Save Order
+            {loading ? "Saving Order" : "Save Order" }
           </button>
         </form>
         </div>

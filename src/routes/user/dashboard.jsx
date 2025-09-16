@@ -62,7 +62,31 @@ function Dashboard() {
     }, [user]);
   return (
     <div>
+      <h1 className="text-3xl font-bold text-blue-400 mb-8">Dashboard</h1>
+      {!loading ? 
+        <div className="flex justify-between gap-3">
+          <div className="bg-white w-full rounded-lg p-5 shadow-md">
+            <p className="text-sm text-gray-400 font-semibold">Total Customers</p>
+            <h2 className="text-3xl font-bold">{customers.length || 0}</h2>
+          </div>
 
+           <div className="bg-white w-full rounded-lg p-5 shadow-md">
+            <p className="text-sm text-gray-400 font-semibold">Total Orders</p>
+            <h2 className="text-3xl font-bold">{orders.length || 0}</h2>
+          </div>
+
+           <div className="bg-white w-full rounded-lg p-5 shadow-md">
+            <p className="text-sm text-gray-400 font-semibold">Completed Orders</p>
+            <h2 className="text-3xl font-bold">{orders.filter(order => order.status == "completed").length || 0 }</h2>
+          </div>
+
+          <div className="bg-white w-full rounded-lg p-5 shadow-md">
+            <p className="text-sm text-gray-400 font-semibold">Pending Orders</p>
+            <h2 className="text-3xl font-bold">{orders.filter(order => order.status == "pending").length || 0}</h2>
+          </div>
+        </div>
+      : "Loading"} 
+      
     </div>
   )
 }

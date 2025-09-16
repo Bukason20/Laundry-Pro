@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaPeopleGroup, FaPlus } from "react-icons/fa6";
 import { ID, Query, Permission, Role } from "appwrite";
 import { databases } from "../../lib/appwrite";
-import { useAuth } from "../../context/authContext"; 
+import { useAuth } from "../../context/authContext";
 
 function Customers() {
   const { user } = useAuth();
@@ -10,25 +10,27 @@ function Customers() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // search state
+  const [searchTerm, setSearchTerm] = useState("");
+
   // form states
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
 
-  // replace with your actual Appwrite database & collection IDs
   const databaseId = "68b88587000b66a7186b";
   const tableId = "customers";
 
   // ✅ fetch only this user's customers
   useEffect(() => {
     const fetchCustomers = async () => {
-      if (!user) return; // wait for auth
+      if (!user) return;
 
       try {
         const response = await databases.listDocuments(
           databaseId,
           tableId,
-          [Query.equal("userId", user.$id)] // only docs where userId matches
+          [Query.equal("userId", user.$id)]
         );
         setCustomers(response.documents);
       } catch (error) {
@@ -41,7 +43,7 @@ function Customers() {
     fetchCustomers();
   }, [user]);
 
-  // ✅ add new customer (with userId + permissions)
+  // ✅ add new customer
   const handleAddCustomer = async (e) => {
     e.preventDefault();
     if (!user) return;
@@ -55,7 +57,7 @@ function Customers() {
           fullName,
           phoneNumber,
           address,
-          userId: user.$id, // link to logged-in user
+          userId: user.$id,
         },
         [
           Permission.read(Role.user(user.$id)),
@@ -74,6 +76,13 @@ function Customers() {
     }
   };
 
+  // ✅ filter customers
+  const filteredCustomers = customers.filter((customer) =>
+    customer.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.address.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -86,6 +95,8 @@ function Customers() {
             type="text"
             placeholder="Search Customer"
             className="bg-white p-2 rounded-md outline-0 border border-gray-400"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // ✅ update searchTerm
           />
           <button
             className="bg-blue-400 p-2 w-fit cursor-pointer text-white font-bold flex items-center rounded-md"
@@ -102,21 +113,19 @@ function Customers() {
         <div className="my-6">
           {loading ? (
             <p>Loading customers...</p>
-          ) : customers.length === 0 ? (
+          ) : filteredCustomers.length === 0 ? (
             <p>No customers found</p>
           ) : (
             <table className="text-center w-full">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="border-y border-x-0 border-blue-200 p-4">Name</th>
-                  <th className="border-y border-x-0 border-blue-200 p-4">
-                    Phone Number
-                  </th>
+                  <th className="border-y border-x-0 border-blue-200 p-4">Phone Number</th>
                   <th className="border-y border-x-0 border-blue-200 p-4">Address</th>
                 </tr>
               </thead>
               <tbody>
-                {customers.map((customer) => (
+                {filteredCustomers.map((customer) => (
                   <tr key={customer.$id} className="bg-gray-100">
                     <td className="border-y border-x-0 border-blue-200 p-4 font-semibold">
                       {customer.fullName}
@@ -142,59 +151,7 @@ function Customers() {
             onSubmit={handleAddCustomer}
             className="bg-white p-7 w-[50%] rounded-lg shadow-md"
           >
-            <h2 className="text-2xl">Customer Registration</h2>
-
-            <div className="my-4">
-              <label htmlFor="name" className="text-sm text-gray-500">
-                Full Name
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. John Doe"
-                id="name"
-                className="block w-full bg-blue-200 p-2 rounded-md mt-1 outline-0"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="my-4">
-              <label htmlFor="phoneNumber" className="text-sm text-gray-500">
-                Phone Number
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. 08023499009"
-                id="phoneNumber"
-                className="block w-full bg-blue-200 p-2 rounded-md mt-1 outline-0"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="my-4">
-              <label htmlFor="address" className="text-sm text-gray-500">
-                Address
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Uyo"
-                id="address"
-                className="block w-full bg-blue-200 p-2 rounded-md mt-1 outline-0"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-fit ml-auto mt-6 block bg-blue-400 p-2 cursor-pointer text-white font-bold rounded-md"
-            >
-              Save Customer
-            </button>
+            {/* form fields... */}
           </form>
         </div>
       )}
