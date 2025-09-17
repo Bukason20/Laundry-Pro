@@ -151,7 +151,59 @@ function Customers() {
             onSubmit={handleAddCustomer}
             className="bg-white p-7 w-[50%] rounded-lg shadow-md"
           >
-            {/* form fields... */}
+            <h2 className="text-2xl">Customer Registration</h2>
+
+            <div className="my-4">
+              <label htmlFor="name" className="text-sm text-gray-500">
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. John Doe"
+                id="name"
+                className="block w-full bg-blue-200 p-2 rounded-md mt-1 outline-0"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="my-4">
+              <label htmlFor="phoneNumber" className="text-sm text-gray-500">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. 08023499009"
+                id="phoneNumber"
+                className="block w-full bg-blue-200 p-2 rounded-md mt-1 outline-0"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="my-4">
+              <label htmlFor="address" className="text-sm text-gray-500">
+                Address
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Uyo"
+                id="address"
+                className="block w-full bg-blue-200 p-2 rounded-md mt-1 outline-0"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-fit ml-auto mt-6 block bg-blue-400 p-2 cursor-pointer text-white font-bold rounded-md"
+            >
+              Save Customer
+            </button>
           </form>
         </div>
       )}
