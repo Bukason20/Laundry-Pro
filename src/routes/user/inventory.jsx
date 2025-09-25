@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaPeopleGroup, FaPlus } from "react-icons/fa6";
+import { FaPeopleGroup, FaPlus, FaTrash } from "react-icons/fa6";
 import { ID, Query, Permission, Role } from "appwrite";
 import { databases } from "../../lib/appwrite";
 import { useAuth } from "../../context/authContext";
@@ -10,12 +10,18 @@ function Inventory() {
   const [supplies, setSupplies] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // editing state
+  const [updateIndex, setUpdateIndex] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editQuantity, setEditQuantity] = useState("");
+  const [editUnit, setEditUnit] = useState("");
+
   // search state
   const [searchTerm, setSearchTerm] = useState("");
 
-  // form states
+  // form states (for adding)
   const [itemName, setItemName] = useState("");
-  const [itemQuantity, setItemQuantity] = useState();
+  const [itemQuantity, setItemQuantity] = useState("");
   const [itemUnit, setItemUnit] = useState("");
 
   const databaseId = "68b88587000b66a7186b";
@@ -43,7 +49,7 @@ function Inventory() {
     fetchSupplies();
   }, [user]);
 
-  // ✅ add new customer
+  // ✅ add new supply
   const handleAddLaundrySupply = async (e) => {
     e.preventDefault();
     if (!user) return;
@@ -72,15 +78,56 @@ function Inventory() {
       setItemQuantity("");
       setItemUnit("");
     } catch (error) {
-      console.error("Error adding customer:", error);
+      console.error("Error adding supply:", error);
     }
   };
 
-  // ✅ filter supplies
-  const filteredsupplies = supplies.filter((customer) =>
-    customer.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.itemQuantity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.itemUnit.toLowerCase().includes(searchTerm.toLowerCase())
+  // ✅ update supply
+  const handleUpdateSupply = async (supplyId) => {
+    try {
+      const updated = await databases.updateDocument(
+        databaseId,
+        tableId,
+        supplyId,
+        {
+          itemName: editName,
+          itemQuantity: parseInt(editQuantity),
+          itemUnit: editUnit,
+        }
+      );
+
+      setSupplies((prev) =>
+        prev.map((s) => (s.$id === supplyId ? updated : s))
+      );
+
+      setUpdateIndex(null);
+      setEditName("");
+      setEditQuantity("");
+      setEditUnit("");
+    } catch (error) {
+      console.error("Error updating supply:", error);
+    }
+  };
+
+  // ✅ delete supply
+  const handleDeleteSupply = async (supplyId) => {
+    try {
+      await databases.deleteDocument(databaseId, tableId, supplyId);
+
+      setSupplies((prev) => prev.filter((s) => s.$id !== supplyId));
+    } catch (error) {
+      console.error("Error deleting supply:", error);
+    }
+  };
+
+  // filter supplies
+  const filteredsupplies = supplies.filter(
+    (supply) =>
+      supply.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(supply.itemQuantity)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      supply.itemUnit.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -93,10 +140,10 @@ function Inventory() {
         <div className="flex gap-3">
           <input
             type="text"
-            placeholder="Search Customer"
+            placeholder="Search Supply"
             className="bg-white p-2 rounded-md outline-0 border border-gray-400"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)} // ✅ update searchTerm
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
             className="bg-blue-400 p-2 w-fit cursor-pointer text-white font-bold flex items-center rounded-md"
@@ -108,7 +155,7 @@ function Inventory() {
         </div>
       </div>
 
-      {/* Show customer list */}
+      {/* Show supplies list */}
       {!addLaundrySupply && (
         <div className="my-6">
           {loading ? (
@@ -119,22 +166,96 @@ function Inventory() {
             <table className="text-center w-full">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="border-y border-x-0 border-blue-200 p-4">Item Name</th>
-                  <th className="border-y border-x-0 border-blue-200 p-4">Item Quantity</th>
-                  <th className="border-y border-x-0 border-blue-200 p-4">item Unit</th>
+                  <th className="border-y border-x-0 border-blue-200 p-4">
+                    Item Name
+                  </th>
+                  <th className="border-y border-x-0 border-blue-200 p-4">
+                    Item Quantity
+                  </th>
+                  <th className="border-y border-x-0 border-blue-200 p-4">
+                    Item Unit
+                  </th>
+                  <th className="border-y border-x-0 border-blue-200 p-4">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredsupplies.map((customer) => (
-                  <tr key={customer.$id} className="bg-gray-100">
+                {filteredsupplies.map((supply, id) => (
+                  <tr key={supply.$id} className="bg-gray-100">
                     <td className="border-y border-x-0 border-blue-200 p-4 font-semibold">
-                      {customer.itemName}
+                      {updateIndex !== id ? (
+                        supply.itemName
+                      ) : (
+                        <input
+                          type="text"
+                          className="text-center border border-blue-300 rounded-md"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                        />
+                      )}
                     </td>
                     <td className="border-y border-x-0 border-blue-200 p-4">
-                      {customer.itemQuantity}
+                      {updateIndex !== id ? (
+                        supply.itemQuantity
+                      ) : (
+                        <input
+                          type="number"
+                          className="text-center border border-blue-300 rounded-md"
+                          value={editQuantity}
+                          onChange={(e) => setEditQuantity(e.target.value)}
+                        />
+                      )}
                     </td>
                     <td className="border-y border-x-0 border-blue-200 p-4">
-                      {customer.itemUnit}
+                      {updateIndex !== id ? (
+                        supply.itemUnit
+                      ) : (
+                        <input
+                          type="text"
+                          className="text-center border border-blue-300 rounded-md"
+                          value={editUnit}
+                          onChange={(e) => setEditUnit(e.target.value)}
+                        />
+                      )}
+                    </td>
+                    <td className="flex items-center justify-center gap-2 py-2">
+                      {updateIndex === id ? (
+                        <>
+                          <button
+                            className="bg-green-500 w-fit text-white px-3 py-1 text-sm rounded-2xl cursor-pointer"
+                            onClick={() => handleUpdateSupply(supply.$id)}
+                          >
+                            Save
+                          </button>
+                          <button
+                            className="bg-gray-400 w-fit text-white px-3 py-1 text-sm rounded-2xl cursor-pointer"
+                            onClick={() => setUpdateIndex(null)}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="bg-blue-400 w-fit text-white px-3 py-1 text-sm rounded-2xl cursor-pointer"
+                            onClick={() => {
+                              setUpdateIndex(id);
+                              setEditName(supply.itemName);
+                              setEditQuantity(supply.itemQuantity);
+                              setEditUnit(supply.itemUnit);
+                            }}
+                          >
+                            Update
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSupply(supply.$id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FaTrash />
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -144,7 +265,7 @@ function Inventory() {
         </div>
       )}
 
-      {/* Add new customer form */}
+      {/* Add new supply form */}
       {addLaundrySupply && (
         <div className="flex flex-col items-center justify-center min-h-[70vh] mt-4">
           <form
