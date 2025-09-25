@@ -14,6 +14,7 @@ import OrderDetails from "./user/orderDetails";
 import Home from "./pages/home";
 import PublicRoute from "./publicRoute";
 import Profile from "./user/profile";
+import Inventory from "./user/inventory";
 function Layout() {
   return (
     <Routes>
@@ -44,6 +45,7 @@ function Layout() {
           <Route path="customers" element={<Customers />} />
           <Route path="orders" element={<Orders />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="inventory" element={<Inventory />} />
           <Route path="orders-details/:id" element={<OrderDetails />} />
         </Route>
 

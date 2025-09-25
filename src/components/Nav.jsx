@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FaBook, FaUserCircle } from 'react-icons/fa'
-import { MdSpaceDashboard } from 'react-icons/md'
+import { MdInventory, MdSpaceDashboard } from 'react-icons/md'
 import { PiUsersThreeFill } from 'react-icons/pi'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
@@ -11,6 +11,7 @@ function Nav() {
       {name: "Dashboard", path: "/u", icon: <MdSpaceDashboard />},
       {name: "Customers", path: "/u/customers", icon: <PiUsersThreeFill />},
       {name: "Orders", path:"/u/orders", icon: <FaBook />},
+      {name: "Inventory", path: "/u/inventory", icon: <MdInventory />},
       {name:"Profile", path:"/u/profile", icon:<FaUserCircle /> }
    ]
    const location = useLocation()
